@@ -12,6 +12,24 @@ from google import genai
 from google.genai import types
 import database
 
+import os
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+
+# static 폴더 연동
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# 메인 웹 페이지(/) 접속 시 index.html 띄우기
+@app.get("/")
+async def read_root():
+    return FileResponse("static/index.html")
+
+# (이 아래에는 기존에 있던 Gemini API 관련 @app.post("/api/ask") 코드 유지)
+
+
 # DB 초기화
 database.init_db()
 
@@ -192,4 +210,5 @@ async def ask_question(request: AskRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+ 
